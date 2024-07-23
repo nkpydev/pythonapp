@@ -1,38 +1,33 @@
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp
-  namespace: default
+  name: python-app-deployment
 spec:
-  replicas: 2
+  replicas: 3  # Number of replicas
   selector:
     matchLabels:
-      app: myapp
+      app: python-app
   template:
     metadata:
       labels:
-        app: myapp
+        app: python-app
     spec:
       containers:
-      - name: myapp
-        image: "pyrpadev/pythonapp"
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
+      - name: python-app-container
+        image: pyrpadev/pythonapp:latest
         ports:
         - containerPort: 5000
+        
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: myapp
-  namespace: default
+  name: python-app-service
 spec:
+  type: LoadBalancer
   selector:
-    app: myapp
+    app: python-app
   ports:
-  - port: 5000
-    targetPort: 80
-
+  - protocol: TCP
+    port: 80
+    targetPort: 5000
